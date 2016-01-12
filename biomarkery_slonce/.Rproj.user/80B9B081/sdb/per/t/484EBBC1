@@ -1,0 +1,17 @@
+{
+    "contents" : "library(ggplot2)\nlibrary(survMisc)\nlibrary(RTCGA.mRNA)\nlibrary(RTCGA.clinical)\ncancer_types<-c(\"BRCA\",\"COAD\",\"COADREAD\",\"GBMLGG\",\"KIPAN\",\"KIRC\",\"KIRP\",\"LGG\",\"LUAD\",\"LUSC\",\"OV\",\"READ\",\"UCEC\")\nfor (j in 1:length(cancer_types))\n{\n   p<-sprintf(\"%s.mRNA\",cancer_types[j])\n   q<-sprintf(\"%s.clinical\",cancer_types[j])\n   namep<-data(list=p)\n   nameq<-data(list=q)\n   \n   \n   mBRCA<-.GlobalEnv[[namep]]\n   cBRCA<-.GlobalEnv[[nameq]]\n   cBRCA <- data.frame(time1=as.numeric(as.character(cBRCA$patient.days_to_death)),\n                       time2=as.numeric(as.character(cBRCA$patient.days_to_last_followup)),\n                       status = cBRCA$patient.vital_status,\n                       barcode = cBRCA$patient.bcr_patient_barcode,\n                       race=cBRCA$patient.race,\n                       therapy=cBRCA$patient.drugs.drug.therapy_types.therapy_type)\n   cBRCA$time <- ifelse(is.na(cBRCA$time1), cBRCA$time2, cBRCA$time1)\n   mBRCA$bcr_patient_barcode<-tolower(substr(mBRCA$bcr_patient_barcode, 1, 12))\n   allBRCA<-merge(mBRCA,cBRCA,by.x=\"bcr_patient_barcode\",by.y=\"barcode\")\n   nrow(allBRCA)\n   statsy<-c()\n   for(i in 2:ncol(mBRCA))\n   {\n      tylko_jeden_gen <- allBRCA[,c(1,i,(ncol(mBRCA)+1):ncol(allBRCA))]\n      names(tylko_jeden_gen)[2]<-\"val\"\n      \n      med<-median(na.omit(tylko_jeden_gen$val))\n      len_glob_val<-length(tylko_jeden_gen$val)\n      len_above_val<-sum(na.omit(tylko_jeden_gen$val)>med)\n      len_below_val<-sum(na.omit(tylko_jeden_gen$val)<med)\n      if(!(len_above_val/len_glob_val<0.2|len_below_val/len_glob_val<0.2))\n      {\n         tryCatch({\n            p<-survdiff(Surv(time,status == \"dead\")~(val>med), data=tylko_jeden_gen)\n            p_val<-1-pchisq(p$chisq,1)\n         },\n         error = function(e) {\n            p_val<-2\n            print(paste0(\"zlo\",i))\n         })\n      }\n      else\n      {\n         p_val<-2\n      }\n      statsy<-c(statsy,p_val)\n   }\n   names(statsy)<-names(mBRCA)[2:ncol(mBRCA)]\n   if(!(dir.exists(paste0(\"./\",cancer_types[j]))))\n   {\n      dir.create(paste0(\"./\",cancer_types[j])) \n   }\n   saveRDS(statsy,paste0(\"./\",cancer_types[j],\"/p-values.RDS\"))\n   dat_min<-allBRCA[,c(1,which(statsy==min(statsy)),(ncol(mBRCA)+1):ncol(allBRCA))]\n   title<-names(dat_min)[2]\n   names(dat_min)[2]<-\"val\"\n   med<-median(na.omit(dat_min$val))\n   ob1 <- survfit(Surv(time, status == \"dead\")~(val>med), data=dat_min)\n   p<-autoplot(ob1,title = title)\n   png(filename=paste0(\"./\",cancer_types[j],\"/\",title,\".png\"))\n   print(p)\n   dev.off()\n   rm(mBRCA,cBRCA,tylko_jeden_gen,statsy)\n}\n\n",
+    "created" : 1450232318191.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1798495118",
+    "id" : "484EBBC1",
+    "lastKnownWriteTime" : 1450637659,
+    "path" : "~/biomarkery/biomarkery.R",
+    "project_path" : "biomarkery.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

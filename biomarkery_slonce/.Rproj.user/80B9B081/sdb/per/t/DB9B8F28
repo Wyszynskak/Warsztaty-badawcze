@@ -1,0 +1,17 @@
+{
+    "contents" : "library(shiny)\nlibrary(ggplot2)\nlibrary(survMisc)\nread_geny<-readRDS(\"../BRCA/geny.RDS\")\ncancer_types<-c(\"BRCA\",\"COAD\",\"COADREAD\",\"GBMLGG\",\"KIPAN\",\"KIRC\",\"KIRP\",\"LGG\",\"LUAD\",\"LUSC\",\"OV\",\"READ\",\"UCEC\")\n# Define UI for application that draws a histogram\nshinyUI(fluidPage(\n   \n   # Application title\n   titlePanel(\"Aplikacja biomarkerów\"),\n   p(\"Karolina Wyszyńska, Krzysztof Rudaś\"),\n   \n   # Sidebar with a slider input for the number of bins\n   sidebarLayout(\n      sidebarPanel(\n         selectInput(\"rak\",\n                     label  = \"Typ raka\",\n                     choices  = cancer_types,\n                     selected = cancer_types[1]\n         ), \n         selectInput(\"gen\",\n                     label  = \"Typ genu\",\n                     choices  = read_geny,\n                     selected = read_geny[1]\n         ), \n         radioButtons(\"typ\",\n                      label  = \"Typ wykresu\",\n                      choices  = c(\"Histogram\", \n                                      \"Krzywa przeżycia\"),\n                      selected = \"Histogram\"\n         )\n         \n         \n         \n         \n      ),\n      \n      # Show a plot of the generated distribution\n      mainPanel(\n         plotOutput(\"wykres\")\n\n      )\n   )\n))",
+    "created" : 1450658448138.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "683525802",
+    "id" : "DB9B8F28",
+    "lastKnownWriteTime" : 1450659227,
+    "path" : "~/biomarkery/shiny/ui.R",
+    "project_path" : "shiny/ui.R",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

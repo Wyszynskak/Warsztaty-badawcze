@@ -1,0 +1,17 @@
+{
+    "contents" : "library(shiny)\n\n# Define UI for application that draws a histogram\nshinyUI(fluidPage(\n   \n   # Application title\n   titlePanel(\"Metody Monte Carlo\"),\n   p(\"Mikołaj Waśniewski, Krzysztof Rudaś\"),\n   \n   # Sidebar with a slider input for the number of bins\n   sidebarLayout(\n      sidebarPanel(\n         numericInput(\"n\", label = \"n\",\n                      min = 1, step = 100, value = 1000),\n         numericInput(\"k\", label = \"Liczba kas\",\n                      min = 1, value = 1),\n         numericInput(\"lambda\", label = \"Średni odstęp miedzy klientami:\",\n                      min = 0, step=0.05, value = 3),\n         radioButtons(\"prob\",\n                            label  = \"Rozkad czasu obsługi\",\n                            choices  = list(\"Wykładniczy\", \n                                            \"Normalny\",\n                                            \"Jednostajny\"),\n                            selected = \"Wykładniczy\"\n         ), \n         numericInput(\"mi\", label = \"Średnia czas obsługi:\",\n                      min = 0, step=0.05, value = 2)\n\n\n         \n         \n      ),\n      \n      # Show a plot of the generated distribution\n      mainPanel(\n        tableOutput(\"queue_summary\"),\n        plotOutput(\"queue_length\"),\n        plotOutput(\"czas\"),\n        plotOutput(\"czas_boxplot\")\n      )\n   )\n))",
+    "created" : 1450657300956.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2393601014",
+    "id" : "9C20D4CA",
+    "lastKnownWriteTime" : 1449436695,
+    "path" : "~/shiny/ui.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

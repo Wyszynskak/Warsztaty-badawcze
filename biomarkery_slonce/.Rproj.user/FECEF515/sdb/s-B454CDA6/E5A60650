@@ -1,0 +1,17 @@
+{
+    "contents" : "library(shiny)\nlibrary(ggplot2)\nlibrary(survMisc)\ncancer_types<-c(\"BRCA\",\"COAD\",\"COADREAD\",\"GBMLGG\",\"KIPAN\",\"KIRC\",\"KIRP\",\n                \"LGG\",\"LUAD\",\"LUSC\",\"OV\",\"READ\",\"UCEC\")\nsetwd(\"C:/Users/wyszy/OneDrive/Studia/Magisterka/Rok 2 sem 1/Warsztaty badawcze/Projekt końcowy/biomarkery_slonce/shiny\")\nfor(i in 1:length(cancer_types)){\n   eval(parse(text=paste0(cancer_types[i],\"geny <- readRDS('../\",cancer_types[i],\"/geny.RDS')\")))\n   eval(parse(text=paste0(cancer_types[i],\"histy <- readRDS('../\",cancer_types[i],\"/histy.RDS')\")))\n   eval(parse(text=paste0(cancer_types[i],\"survy <- readRDS('../\",cancer_types[i],\"/survy.RDS')\")))\n}\n\nshinyServer(function(input, output){\n   output$istotne_geny<-renderUI({\n      \n      eval(parse(text=paste0(\"geny <- \", input$rak, \"geny\")))\n      text <- paste('\"', geny, '\"', sep=\"\")\n      text <- paste(text, text, sep=\"=\", collapse=\", \")\n      text <- paste0('list(', text, ')')\n      lista <- eval(parse(text=text))\n      selectInput(\"wybrany_gen\", label=h3(strong(\"Istotne geny\")), \n                  choices=lista, selected=lista[[1]])\n      \n   })\n   output$wykres <- renderPlot({\n      if(input$typ==\"Histogram\"){\n         eval(parse(text=paste0(\"q <- \", input$rak, \"histy[['\",input$wybrany_gen,\"']]\")))\n         q<-ggplot(q,aes(val))+ geom_histogram(binwidth = 0.1)\n      } else {\n         eval(parse(text=paste0(\"q <- \", input$rak, \"survy[['\",input$wybrany_gen,\"']]\")))\n         q<-autoplot(q)\n      }\n      q\n   })\n})",
+    "created" : 1452456356077.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2963606923",
+    "id" : "E5A60650",
+    "lastKnownWriteTime" : 1452591708,
+    "path" : "C:/Users/wyszy/OneDrive/Studia/Magisterka/Rok 2 sem 1/Warsztaty badawcze/Projekt końcowy/biomarkery_slonce/shiny/server.R",
+    "project_path" : "shiny/server.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

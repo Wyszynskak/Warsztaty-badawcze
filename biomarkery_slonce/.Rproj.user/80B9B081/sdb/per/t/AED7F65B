@@ -1,0 +1,17 @@
+{
+    "contents" : "library(shiny)\nlibrary(ggplot2)\nlibrary(survMisc)\ncancer_types<-c(\"BRCA\")\ngeny<-readRDS(paste0(\"../BRCA/geny.RDS\"))\n\nshinyServer(function(input, output){\n   \n   output$wykres <- renderPlot({\n         \n         for (i in 1:length(geny))\n            { \n            if (input$gen == geny[i]){\n               \n            for(j in 1:length(cancer_types))\n            {\n               \n               \n               if(cancer_types[j]==input$rak)\n               {\n              \n             \n                  if(input$typ==\"Histogram\")\n                  {\n                     q<-readRDS(paste0(\"../\",cancer_types[j],\"/histy.RDS\"))[[i]]\n                     q<-q+ geom_histogram(binwidth = 0.1)\n                  }\n                  else\n                  {\n\n                     q<-readRDS(paste0(\"../\",cancer_types[j],\"/survy.RDS\"))[[i]]\n                     q<-autoplot(q)\n                  }\n               }\n\n            } \n         }\n\n      }\n     \n      q\n   })\n})",
+    "created" : 1450659614844.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1826366199",
+    "id" : "AED7F65B",
+    "lastKnownWriteTime" : 1450691467,
+    "path" : "~/biomarkery/shiny/server.R",
+    "project_path" : "shiny/server.R",
+    "properties" : {
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

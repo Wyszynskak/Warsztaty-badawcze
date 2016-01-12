@@ -1,0 +1,18 @@
+{
+    "contents" : "cancer_types<-c(\"BRCA\",\"COAD\",\"COADREAD\",\"GBMLGG\",\"KIPAN\",\"KIRC\",\"KIRP\",\"LGG\",\"LUAD\",\"LUSC\",\"OV\",\"READ\",\"UCEC\")\n\nmost_good_cancer<-list()\nfor(cancer in cancer_types)\n{\n   p<-readRDS(paste0(\"./\",cancer,\"/p-values.RDS\"))\n   p<-sort(p,decreasing=)\n   p1<-p[1:100]\n   if(sum(names(p1)=='SNIP1'))\n   print(cancer)\n   most_good_cancer[[which(cancer_types==cancer)]]<-p1\n}\nmost_good<-most_good_cancer[[1]]\nfor(i in 2:length(cancer_types))\n{\n  most_good<-c(most_good,most_good_cancer[[i]])   \n}   \nq<-sort(table(names(most_good))) \nstatsy<-readRDS(paste0(\"./\",'COAD',\"/p-values.RDS\"))\n\ndat_min<-allBRCA[,c(1,(which(names(statsy)=='SNIP1')+1),(ncol(mBRCA)+1):ncol(allBRCA))]\ntitle<-names(dat_min)[2]\nnames(dat_min)[2]<-\"val\"\nmed<-median(na.omit(dat_min$val))\nob1 <- survfit(Surv(time, status == \"dead\")~(val>med), data=dat_min)\nautoplot(ob1,title = title)\nhead(dat_min)\n",
+    "created" : 1450258206389.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3328841354",
+    "id" : "13463402",
+    "lastKnownWriteTime" : 1450275414,
+    "path" : "~/biomarkery/zesawienie.R",
+    "project_path" : "zesawienie.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
