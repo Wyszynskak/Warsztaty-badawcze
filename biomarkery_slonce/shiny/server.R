@@ -36,7 +36,7 @@ shinyServer(function(input, output){
       min <- min(gene, na.rm=TRUE)
       med <- median(gene, na.rm=TRUE)
       sliderInput("stratum_value_choosen", label="Stratum value: ", min=min,
-                    max=max,value=med, step=0.01, round=-2)
+                    max=max,value=med, step=0.01, round=-2, ticks=FALSE)
 
    })
    
@@ -76,27 +76,29 @@ shinyServer(function(input, output){
          q<-ggplot(q,aes_string(names(q)[1]))+ geom_histogram(binwidth = 0.1)+
             scale_y_continuous(name="Number of observations")+
             scale_x_continuous(name="Values")+
-            ggtitle(paste0("mRNA histogram ",input$wybrany_gen))+
+            ggtitle(paste0("mRNA histogram ",input$choosen_gene))+
             theme(plot.title = element_text(lineheight=20, face="bold"))
       } else {
          eval(parse(text=paste0("tmp <- which(colnames(",input$cancer,
                                 "data)=='", input$choosen_gene,"')")))
          eval(parse(text=paste0("dane <- ",input$cancer, "data[,c(1,",
                                 tmp,",(ncol(",
-                                input$cancer,"data)-2):ncol(",
+                                input$cancer,"data)-1):ncol(",
                                 input$cancer,"data))]")))
          dane$time <- dane$time/365
          med <- input$stratum_value_choosen
          eval(parse(text=paste0(
               'q<-survfit(Surv(time, status == "dead")~(', input$choosen_gene, 
                 ">med), data=dane)")))
+         try({suppressWarnings({
          q<-autoplot(q,xLab="years",yLab="",
                      title=paste0("Survival plot for mRNA ",input$choosen_gene,
                                   "\n1-P(death)"),
                      legTitle = "Stratum",
                      legLabs=c(paste0("Patients with value < ",round(med,4)),
                                paste0("Patients with value > ",
-                                      round(med,4))))
+                                      round(med,4))))$plot+scale_y_continuous(
+                                        limits=c(0,1))})}, silent=TRUE)
       }
       q
    })
