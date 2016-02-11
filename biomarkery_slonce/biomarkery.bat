@@ -1,1 +1,0 @@
-"C:\Program Files\R\R-3.2.2\bin\x64\R" CMD BATCH  --slave --no-save --quiet "./biomarkery.R"
